@@ -55,11 +55,24 @@ public class ShoppingWebsite {
         searchBox.sendKeys("dress");
         searchBox.sendKeys(Keys.ENTER);
 
+        // Reveal add to cart button
+        WebElement visibleMenu = driver.findElement(By.cssSelector("#center_column > ul " +
+                "> li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line" +
+                ".last-item-of-mobile-line " +
+                "> div"));
+        Actions actions = new Actions(driver);
+        actions.moveToElement(visibleMenu);
+        WebElement revealedMenu = driver.findElement(By.cssSelector("#center_column > ul " +
+                "> li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line" +
+                ".last-item-of-mobile-line > div > div.right-block > div.button-container " +
+                "> a.button.ajax_add_to_cart_button.btn.btn-default"));
+        actions.moveToElement(revealedMenu);
+        actions.click().build().perform();
+
         WebDriverWait wait = new WebDriverWait(this.driver, Duration.ofSeconds(20));
 
         WebElement addToCartBtn = wait.until(ExpectedConditions
                 .visibilityOfElementLocated(By.cssSelector("#center_column > ul > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line > div > div.right-block > div.button-container > a.button.ajax_add_to_cart_button.btn.btn-default")));
-
         addToCartBtn.click();
 
         // start proceeding through the pages.
@@ -72,15 +85,16 @@ public class ShoppingWebsite {
         proceedButton2.click();
 
         // login here.
-        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#email")));
-        WebElement psswordField = this.driver.findElement(By.cssSelector("#passwd"));
+        WebElement email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#email")));
+        WebElement pass = this.driver.findElement(By.cssSelector("#passwd"));
 
-        emailField.sendKeys(testWebsiteUsername);
-        psswordField.sendKeys(testWebsitePassword);
+        email.sendKeys(testWebsiteUsername);
+        pass.sendKeys(testWebsitePassword);
+        pass.sendKeys(Keys.ENTER);
 
-        // keep proceeding.
-        WebElement signInButton = this.driver.findElement(By.cssSelector("#SubmitLogin"));
-        signInButton.click();
+//        // keep proceeding.
+//        WebElement signInButton = this.driver.findElement(By.cssSelector("#SubmitLogin"));
+//        signInButton.click();
 
         WebElement proceedButton3 = wait.until(ExpectedConditions
                 .visibilityOfElementLocated(By.cssSelector("#center_column > form > p > button")));
