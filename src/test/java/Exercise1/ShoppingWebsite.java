@@ -30,6 +30,7 @@ public class ShoppingWebsite {
     @BeforeEach
     void setup() {
         this.driver = new ChromeDriver();
+        this.driver.manage().window().maximize();
     }
 
     @Test
@@ -39,7 +40,9 @@ public class ShoppingWebsite {
         WebElement search = this.driver.findElement(By.cssSelector("#search_query_top"));
         search.sendKeys("Dress");
         search.sendKeys(Keys.ENTER);
-        WebElement result = this.driver.findElement(By.cssSelector("#center_column > ul > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line > div > div.right-block > h5 > a"));
+        WebElement result = this.driver.findElement(By.cssSelector("#center_column > ul > " +
+                "li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.first-in-line.last-item-of-tablet-line.first-item-of-mobile-line > " +
+                "div > div.right-block > h5 > a"));
 
         assertEquals("Printed Chiffon Dress", result.getText());
     }
@@ -48,33 +51,62 @@ public class ShoppingWebsite {
     void checkoutDressTest() {
 
         this.driver.get("http://automationpractice.com/index.php");
-        WebElement search = this.driver.findElement(By.cssSelector("#search_query_top"));
-        search.sendKeys("Dress");
-        search.sendKeys(Keys.ENTER);
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
+        WebElement searchBox = this.driver.findElement(By.id("search_query_top"));
+        searchBox.sendKeys("dress");
+        searchBox.sendKeys(Keys.ENTER);
+
+        WebDriverWait wait = new WebDriverWait(this.driver, Duration.ofSeconds(20));
+
         WebElement addToCartBtn = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#center_column > ul > li:nth-child(1) > div > div.right-block > div.button-container > " +
-                        "a.button.ajax_add_to_cart_button.btn.btn-default")));
-        if (addToCartBtn.isDisplayed()) {
-            System.out.println("Got IT!");
-            addToCartBtn.click();
-        }
+                .visibilityOfElementLocated(By.cssSelector("#center_column > ul > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line > div > div.right-block > div.button-container > a.button.ajax_add_to_cart_button.btn.btn-default")));
 
-//        this.driver.findElement(By.cssSelector("#center_column > ul > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line > div > div.right-block > div.button-container > a.button.ajax_add_to_cart_button.btn.btn-default > span"));
-//        this.driver.findElement(By.cssSelector("#layer_cart > div.clearfix > div.layer_cart_cart.col-xs-12.col-md-6 > div.button-container > a > span"));
-//        this.driver.findElement(By.cssSelector("#center_column > ul > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line > div > div.right-block > h5 > a"));
-//        this.driver.findElement(By.cssSelector("#center_column > p.cart_navigation.clearfix > a.button.btn.btn-default.standard-checkout.button-medium > span"));
-//        this.driver.findElement(By.cssSelector("#email")).sendKeys(testWebsiteUsername);
-//        this.driver.findElement(By.cssSelector("#passwd")).sendKeys(testWebsitePassword, Keys.ENTER);
-//        this.driver.findElement(By.cssSelector("#center_column > form > p > button > span"));
-//        this.driver.findElement(By.cssSelector("#cgv")).click();
-//        this.driver.findElement(By.cssSelector("#center_column > form > p > button > span"));
-//        this.driver.findElement(By.cssSelector("#HOOK_PAYMENT > div:nth-child(1) > div > p > a"));
-//        this.driver.findElement(By.cssSelector("#cart_navigation > button > span"));
-        WebElement result = this.driver.findElement(By.cssSelector("#center_column > div > p > strong"));
+        addToCartBtn.click();
 
-        assertEquals("Your order on My Store is complete", result.getText());
+        // start proceeding through the pages.
+        WebElement proceedButton = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#layer_cart > div.clearfix > div.layer_cart_cart.col-xs-12.col-md-6 > div.button-container > a")));
+        proceedButton.click();
 
+        WebElement proceedButton2 = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#center_column > p.cart_navigation.clearfix > a.button.btn.btn-default.standard-checkout.button-medium")));
+        proceedButton2.click();
+
+        // login here.
+        WebElement emailField = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#email")));
+        WebElement psswordField = this.driver.findElement(By.cssSelector("#passwd"));
+
+        emailField.sendKeys(testWebsiteUsername);
+        psswordField.sendKeys(testWebsitePassword);
+
+        // keep proceeding.
+        WebElement signInButton = this.driver.findElement(By.cssSelector("#SubmitLogin"));
+        signInButton.click();
+
+        WebElement proceedButton3 = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#center_column > form > p > button")));
+        proceedButton3.click();
+
+        WebElement tosChecker = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#uniform-cgv")));
+        tosChecker.click();
+
+        WebElement proceedButton4 = this.driver.findElement(By.cssSelector("#form > p > button"));
+        proceedButton4.click();
+
+        // pay here.
+        WebElement payByWire = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#HOOK_PAYMENT > div:nth-child(1) > div > p > a")));
+        payByWire.click();
+
+        WebElement confirmButton = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#cart_navigation > button")));
+        confirmButton.click();
+
+        // make assertion.
+        WebElement checkField = wait.until(ExpectedConditions
+                .visibilityOfElementLocated(By.cssSelector("#center_column > div > p > strong")));
+
+        assertEquals("Your order on My Store is complete.", checkField.getText());
     }
 
 
