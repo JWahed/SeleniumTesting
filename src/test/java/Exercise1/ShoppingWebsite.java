@@ -68,23 +68,24 @@ public class ShoppingWebsite {
                 "> a.button.ajax_add_to_cart_button.btn.btn-default"));
         actions.moveToElement(revealedMenu);
         actions.click().build().perform();
-
         WebDriverWait wait = new WebDriverWait(this.driver, Duration.ofSeconds(20));
-
         WebElement addToCartBtn = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#center_column > ul > li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line.last-item-of-mobile-line > div > div.right-block > div.button-container > a.button.ajax_add_to_cart_button.btn.btn-default")));
+                .visibilityOfElementLocated(By.cssSelector("#center_column > ul " +
+                        "> li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line" +
+                        ".last-item-of-mobile-line > div > div.right-block > div.button-container " +
+                        "> a.button.ajax_add_to_cart_button.btn.btn-default")));
         addToCartBtn.click();
 
-        // start proceeding through the pages.
-        WebElement proceedButton = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#layer_cart > div.clearfix > div.layer_cart_cart.col-xs-12.col-md-6 > div.button-container > a")));
-        proceedButton.click();
+        // proceed pt1
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(
+                "#layer_cart > div.clearfix > div.layer_cart_cart.col-xs-12.col-md-6 > div.button-container > a")))
+                .click();
 
-        WebElement proceedButton2 = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#center_column > p.cart_navigation.clearfix > a.button.btn.btn-default.standard-checkout.button-medium")));
-        proceedButton2.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(
+                "#center_column > p.cart_navigation.clearfix > a.button.btn.btn-default.standard-checkout.button-medium")))
+                .click();
 
-        // login here.
+        // sign in
         WebElement email = wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#email")));
         WebElement pass = this.driver.findElement(By.cssSelector("#passwd"));
 
@@ -92,35 +93,26 @@ public class ShoppingWebsite {
         pass.sendKeys(testWebsitePassword);
         pass.sendKeys(Keys.ENTER);
 
-//        // keep proceeding.
-//        WebElement signInButton = this.driver.findElement(By.cssSelector("#SubmitLogin"));
-//        signInButton.click();
+        // proceed pt2
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#center_column > form > p > button"))).click();
 
-        WebElement proceedButton3 = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#center_column > form > p > button")));
-        proceedButton3.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector("#uniform-cgv"))).click();
 
-        WebElement tosChecker = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#uniform-cgv")));
-        tosChecker.click();
+        this.driver.findElement(By.cssSelector("#form > p > button")).click();
 
-        WebElement proceedButton4 = this.driver.findElement(By.cssSelector("#form > p > button"));
-        proceedButton4.click();
+        // payment
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(
+                "#HOOK_PAYMENT > div:nth-child(1) > div > p > a")))
+                .click();
 
-        // pay here.
-        WebElement payByWire = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#HOOK_PAYMENT > div:nth-child(1) > div > p > a")));
-        payByWire.click();
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.cssSelector(
+                "#cart_navigation > button"))).click();
 
-        WebElement confirmButton = wait.until(ExpectedConditions
-                .visibilityOfElementLocated(By.cssSelector("#cart_navigation > button")));
-        confirmButton.click();
-
-        // make assertion.
-        WebElement checkField = wait.until(ExpectedConditions
+        // assertion
+        WebElement result = wait.until(ExpectedConditions
                 .visibilityOfElementLocated(By.cssSelector("#center_column > div > p > strong")));
 
-        assertEquals("Your order on My Store is complete.", checkField.getText());
+        assertEquals("Your order on My Store is complete.", result.getText());
     }
 
 
