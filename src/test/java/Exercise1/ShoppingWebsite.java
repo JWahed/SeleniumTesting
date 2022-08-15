@@ -69,6 +69,8 @@ public class ShoppingWebsite {
                 "> a.button.ajax_add_to_cart_button.btn.btn-default"));
         actions.moveToElement(revealedMenu);
         actions.click().build().perform();
+
+        // click button after waiting for it to appear
         WebDriverWait wait = new WebDriverWait(this.driver, Duration.ofSeconds(20));
         WebElement addToCartBtn = wait.until(ExpectedConditions
                 .visibilityOfElementLocated(By.cssSelector("#center_column > ul " +
