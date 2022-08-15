@@ -50,12 +50,13 @@ public class ShoppingWebsite {
     @Test
     void checkoutDressTest() {
 
+        // search
         this.driver.get("http://automationpractice.com/index.php");
         WebElement searchBox = this.driver.findElement(By.id("search_query_top"));
         searchBox.sendKeys("dress");
         searchBox.sendKeys(Keys.ENTER);
 
-        // Reveal add to cart button
+        // reveal add to cart button
         WebElement visibleMenu = driver.findElement(By.cssSelector("#center_column > ul " +
                 "> li.ajax_block_product.col-xs-12.col-sm-6.col-md-4.last-in-line.last-item-of-tablet-line" +
                 ".last-item-of-mobile-line " +
